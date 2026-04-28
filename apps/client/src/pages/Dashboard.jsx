@@ -42,6 +42,31 @@ export default function Dashboard() {
 
   const ActiveTemplate = templates[selectedTemplate] || ClassicTemplate;
 
+  const handleDownload = async () => {
+    const loadingToast = toast.loading('Generating PDF...');
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/resumes/download`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ formData, aiContent, template: selectedTemplate }),
+      });
+
+      if (!response.ok) throw new Error('Download failed');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${formData.fullName || 'resume'}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast.success('Resume Downloaded!', { id: loadingToast });
+    } catch (err) {
+      toast.error('Failed to download PDF.', { id: loadingToast });
+    }
+  };
+
   return (
     <div className="noise" style={{ minHeight: '100vh', background: 'var(--bg-primary)', overflow: 'hidden' }}>
       <Navbar />
@@ -143,7 +168,11 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-              <button className="btn btn-primary" style={{ width: '100%' }}>
+              <button 
+                onClick={handleDownload}
+                className="btn btn-primary" 
+                style={{ width: '100%' }}
+              >
                 <Download size={16} /> Export to PDF
               </button>
             </section>
