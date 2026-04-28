@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{fullName}} | Creative Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafafa;
+            --primary: #6366f1;
+            --accent: #f472b6;
+            --text: #1f2937;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+        .blob {
+            position: fixed; top: -10%; right: -10%; width: 50vw; height: 50vw;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(244, 114, 182, 0.1));
+            filter: blur(80px); border-radius: 50%; z-index: -1;
+            animation: move 20s infinite alternate;
+        }
+        @keyframes move { from { transform: translate(0,0); } to { transform: translate(-10%, 10%); } }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+        
+        .hero { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; }
+        .hero h1 { font-size: 5rem; font-weight: 800; letter-spacing: -0.05em; line-height: 0.9; margin-bottom: 2rem; }
+        .hero p { font-size: 1.5rem; max-width: 700px; opacity: 0.8; }
+
+        .section { padding: 6rem 0; }
+        .section-h { font-size: 3rem; font-weight: 800; margin-bottom: 3rem; }
+
+        .project-card { 
+            padding: 3rem; background: #fff; border-radius: 2rem; margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .project-card:hover { transform: translateY(-10px) rotate(1deg); }
+        .tag { display: inline-block; padding: 0.25rem 1rem; border-radius: 1rem; background: var(--bg); font-weight: 600; font-size: 0.8rem; margin-right: 0.5rem; }
+
+        .skills { display: flex; flex-wrap: wrap; gap: 1rem; }
+        .skill { font-size: 2.5rem; font-weight: 800; opacity: 0.15; transition: opacity 0.3s; cursor: default; }
+        .skill:hover { opacity: 1; color: var(--primary); }
+
+        footer { padding: 4rem 0; font-weight: 600; opacity: 0.5; }
+    </style>
+</head>
+<body>
+    <div class="blob"></div>
+    <div class="container">
+        <header class="hero">
+            <p style="font-weight: 600; color: var(--primary); margin-bottom: 1rem;">HELLO, I'M {{fullName}}</p>
+            <h1>{{jobRole}}</h1>
+            <p>{{careerObjective}}</p>
+        </header>
+
+        <section class="section">
+            <h2 class="section-h">Selected Projects</h2>
+            {{#each projects}}
+            <div class="project-card">
+                <span style="font-weight: 800; color: var(--accent); font-size: 0.8rem;">0{{@index}}</span>
+                <h3 style="font-size: 2rem; margin: 1rem 0;">{{this.name}}</h3>
+                <p style="margin-bottom: 2rem; opacity: 0.7;">{{this.description}}</p>
+                <div>
+                    <span class="tag">{{this.techStack}}</span>
+                </div>
+            </div>
+            {{/each}}
+        </section>
+
+        <section class="section">
+            <h2 class="section-h">Skillset</h2>
+            <div class="skills">
+                {{#each skills}}
+                <span class="skill">{{this}}</span>
+                {{/each}}
+            </div>
+        </section>
+
+        <footer>
+            Built with ResumeForge AI &bull; 2026
+        </footer>
+    </div>
+</body>
+</html>

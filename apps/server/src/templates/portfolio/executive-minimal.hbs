@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{fullName}} | Executive Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --muted: #666666;
+            --border: #eeeeee;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 3rem; }
+        
+        header { padding: 6rem 0 4rem; border-bottom: 1px solid var(--border); }
+        h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 1rem; }
+        .role { font-size: 1.25rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; }
+        .objective { font-size: 1.2rem; color: var(--text); max-width: 700px; }
+
+        .section { padding: 5rem 0; border-bottom: 1px solid var(--border); }
+        .section-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 3rem; text-transform: lowercase; font-style: italic; }
+
+        .exp-item { margin-bottom: 4rem; }
+        .exp-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; }
+        .company { font-weight: 600; font-size: 1.1rem; }
+        .duration { color: var(--muted); font-size: 0.9rem; }
+        
+        .projects-list { display: grid; gap: 3rem; }
+        .project-item h3 { font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 600; }
+        .project-item p { color: var(--muted); margin-bottom: 1rem; }
+        
+        .skills-list { display: flex; flex-wrap: wrap; gap: 3rem; row-gap: 1.5rem; }
+        .skill-item { font-weight: 500; }
+
+        footer { padding: 4rem 0; display: flex; justify-content: space-between; color: var(--muted); font-size: 0.9rem; }
+        a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); transition: border-color 0.2s; }
+        a:hover { border-color: var(--text); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="role">{{jobRole}}</div>
+            <h1>{{fullName}}</h1>
+            <p class="objective">{{careerObjective}}</p>
+            <div style="margin-top: 2.5rem; display: flex; gap: 2rem;">
+                {{#if email}}<a href="mailto:{{email}}">Email</a>{{/if}}
+                {{#if linkedin}}<a href="{{linkedin}}">LinkedIn</a>{{/if}}
+                {{#if github}}<a href="{{github}}">GitHub</a>{{/if}}
+            </div>
+        </header>
+
+        <section class="section">
+            <h2 class="section-title">experience</h2>
+            {{#each experience}}
+            <div class="exp-item">
+                <div class="exp-header">
+                    <div class="company">{{this.company}}</div>
+                    <div class="duration">{{this.duration}}</div>
+                </div>
+                <div style="font-weight: 500; margin-bottom: 1rem;">{{this.role}}</div>
+                <p style="color: var(--muted); white-space: pre-line;">{{this.responsibilities}}</p>
+            </div>
+            {{/each}}
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">projects</h2>
+            <div class="projects-list">
+                {{#each projects}}
+                <div class="project-item">
+                    <h3>{{this.name}}</h3>
+                    <p>{{this.description}}</p>
+                    <div style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">{{this.techStack}}</div>
+                </div>
+                {{/each}}
+            </div>
+        </section>
+
+        <section class="section" style="border-bottom: none;">
+            <h2 class="section-title">expertise</h2>
+            <div class="skills-list">
+                {{#each skills}}
+                <div class="skill-item">{{this}}</div>
+                {{/each}}
+            </div>
+        </section>
+
+        <footer>
+            <div>&copy; 2026 {{fullName}}</div>
+            <div>Built with ResumeForge</div>
+        </footer>
+    </div>
+</body>
+</html>

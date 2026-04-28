@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{fullName}} | Portfolio</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+        nav { padding: 2rem 0; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 800; font-size: 1.5rem; color: var(--accent); }
+        
+        header { padding: 4rem 0; }
+        .hero h1 { fontSize: 4rem; line-height: 1.1; margin-bottom: 1rem; }
+        .typing { color: var(--accent); border-right: 3px solid; width: 14ch; white-space: nowrap; overflow: hidden; animation: typing 2s steps(14), blink .5s step-end infinite alternate; }
+        @keyframes typing { from { width: 0 } }
+        @keyframes blink { 50% { border-color: transparent } }
+        
+        .section-title { font-size: 2rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; }
+        .section-title::after { content: ''; height: 2px; flex: 1; background: var(--card); }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .card { background: var(--card); padding: 2rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.05); }
+        .card h3 { color: var(--accent); margin-bottom: 1rem; }
+        
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .skill-tag { background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.875rem; font-weight: 600; font-family: monospace; }
+        
+        footer { padding: 4rem 0; text-align: center; color: var(--text-muted); border-top: 1px solid var(--card); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <div class="logo">&lt;{{fullName}} /&gt;</div>
+            <div>{{email}}</div>
+        </nav>
+
+        <header class="hero">
+            <h1 class="typing">{{jobRole}}</h1>
+            <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 600px;">
+                {{careerObjective}}
+            </p>
+        </header>
+
+        <section style="margin-bottom: 6rem;">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="grid">
+                {{#each projects}}
+                <div class="card">
+                    <h3>{{this.name}}</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">{{this.techStack}}</p>
+                    <p>{{this.description}}</p>
+                </div>
+                {{/each}}
+            </div>
+        </section>
+
+        <section style="margin-bottom: 6rem;">
+            <h2 class="section-title">Technologies</h2>
+            <div class="skills-grid">
+                {{#each skills}}
+                <span class="skill-tag">{{this}}</span>
+                {{/each}}
+            </div>
+        </section>
+
+        <footer>
+            &copy; 2026 {{fullName}} — Built with ResumeForge AI
+        </footer>
+    </div>
+</body>
+</html>

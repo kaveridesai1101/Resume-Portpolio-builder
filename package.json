@@ -1,0 +1,19 @@
+{
+  "name": "resumeforge-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "client": "npm run dev -w apps/client",
+    "server": "npm run dev -w apps/server",
+    "docker:up": "docker-compose up --build",
+    "docker:down": "docker-compose down"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "concurrently": "^8.2.2"
+  }
+}
