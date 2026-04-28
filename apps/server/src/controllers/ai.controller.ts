@@ -1,51 +1,45 @@
 import { Request, Response } from 'express';
-import { AIService } from '../services/ai.service';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { RESUME_SYSTEM_PROMPT } from '@resumeforge/ai-prompts';
 
-export const generateResumeContent = async (req: Request, res: Response) => {
-  // Set headers for SSE
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-  const { formData } = req.body;
-
+export const generateAIContent = async (req: Request, res: Response) => {
   try {
-    const aiService = new AIService();
+    const { formData } = req.body;
+
+    // Set headers for SSE (Server-Sent Events)
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const prompt = `
+      ${RESUME_SYSTEM_PROMPT}
+      
+      User Data: ${JSON.stringify(formData)}
+      
+      Please provide:
+      1. An optimized Career Objective.
+      2. Enhanced bullet points for each experience.
+      3. Enhanced bullet points for each project.
+      4. A list of 8 recommended skills.
+
+      Return the response in valid JSON format.
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
     
-    // Run 4 tasks in parallel via Promise.allSettled as requested
-    const results = await Promise.allSettled([
-      aiService.generateObjective(formData),
-      aiService.enhanceProjects(formData.projects, formData.jobRole),
-      aiService.enhanceExperience(formData.experience, formData.jobRole, formData.experienceLevel),
-      aiService.recommendSkills(formData.jobRole, formData.experienceLevel, formData.skills)
-    ]);
-
-    // Send results back via SSE chunks
-    results.forEach((result, index) => {
-      const types = ['objective', 'projects', 'experience', 'skills'];
-      if (result.status === 'fulfilled') {
-        res.write(`data: ${JSON.stringify({ type: types[index], content: result.value })}\n\n`);
-      } else {
-        res.write(`data: ${JSON.stringify({ type: types[index], error: 'Generation failed' })}\n\n`);
-      }
-    });
-
-    res.write('data: [DONE]\n\n');
+    // Clean JSON from potential markdown blocks
+    const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    
+    res.write(`data: ${JSON.stringify({ type: 'complete', content: JSON.parse(jsonStr) })}\n\n`);
     res.end();
   } catch (error) {
-    console.error('AI GENERATION ERROR:', error);
-    res.write(`data: ${JSON.stringify({ error: 'Critical failure' })}\n\n`);
+    console.error('Gemini Error:', error);
+    res.write(`data: ${JSON.stringify({ type: 'error', message: 'AI Generation failed' })}\n\n`);
     res.end();
-  }
-};
-
-export const scoreResumeController = async (req: Request, res: Response) => {
-  const { resumeData } = req.body;
-  try {
-    const aiService = new AIService();
-    const analysis = await aiService.analyzeATS(resumeData);
-    return res.status(200).json(analysis);
-  } catch (error) {
-    return res.status(500).json({ message: 'Scoring failed' });
   }
 };
